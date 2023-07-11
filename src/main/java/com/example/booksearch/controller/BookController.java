@@ -1,5 +1,6 @@
 package com.example.booksearch.controller;
 
+import com.example.booksearch.dao.BookDao;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/book")
 public class BookController {
 
-//    private final BookDao bookDao;
+    private final BookDao bookDao;
 
-//    public BookController(BookDao bookDao) {
-//        this.bookDao = bookDao;
-//    }
+    public BookController(BookDao bookDao) {
+        this.bookDao = bookDao;
+    }
 
     @GetMapping("/search")
     public String getSearchPage() {
