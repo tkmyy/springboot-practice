@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Search Results</title>
+  <!-- Add Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-3">
+  <h1>Book Search Results</h1>
+  <div class="row">
+    <!-- Loop through each book and display its information in a card -->
+    <th:block th:each="book : ${books}">
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <img class="card-img-top" th:src="${book.imageUrl}" alt="Book cover image">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${book.title}"></h5>
+            <h6 class="card-subtitle mb-2 text-muted" th:text="${book.authors}"></h6>
+            <p class="card-text" th:text="${book.description}"></p>
+            <a href="#" class="btn btn-primary">More info</a>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
+</div>
+<!-- Add Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

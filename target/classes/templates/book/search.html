@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Book Search</title>
+  <!-- Add Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-  <h1>Book Search</h1>
-  <form action="/list" method="post">
-    <input type="text" name="query" required placeholder="Enter search query">
-    <button type="submit">Search</button>
+<div class="container mt-3">
+  <h1>Search for Books</h1>
+  <form th:action="@{/book/search}" method="post" th:object="${queryForm}">
+    <div class="form-group">
+      <label for="query">Search Query</label>
+      <input type="text" class="form-control" id="query" th:field="*{query}" placeholder="Enter search query">
+      <p class="text-danger" th:if="${#fields.hasErrors('query')}" th:errors="*{query}"></p>
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
   </form>
 </div>
+<!-- Add Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
