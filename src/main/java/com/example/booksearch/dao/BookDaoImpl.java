@@ -39,24 +39,20 @@ public class BookDaoImpl implements BookDao, InitializingBean {
 
         Map<String, Object> responseMap = responseMono.block();
 
-        // 'items'キーに対応する値を取得する
         List<Map<String, Object>> itemsList = (List<Map<String, Object>>) responseMap.get("items");
 
-        // Bookオブジェクトのリストを作成
         List<Book> books = new ArrayList<>();
         for (Map<String, Object> itemMap : itemsList) {
-            // 'volumeInfo'キーの内容を取得
             Map<String, Object> volumeInfoMap = (Map<String, Object>) itemMap.get("volumeInfo");
+            // Map<String, Object> imageLinksMap = (Map<String, Object>) itemMap.get("imageLinks");
 
-            // Bookオブジェクトを作成してリストに追加
             Book book = new Book();
             book.setTitle((String) volumeInfoMap.get("title"));
             book.setPublishedDate((String) volumeInfoMap.get("publishedDate"));
-            book.setDescription((String) volumeInfoMap.get("description"));
+            // book.setImageUrl((String) imageLinksMap.get("thumbnail"));
             books.add(book);
         }
 
-        // BookListオブジェクトを作成して返す
         BookList bookList = new BookList();
         bookList.setBooks(books);
         return bookList;

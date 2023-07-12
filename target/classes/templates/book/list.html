@@ -8,25 +8,44 @@
 </head>
 <body>
 <div class="container mt-3">
-  <h1>Book Search Results</h1>
+  <h1 th:text="'「'+${queryForm.query}+'」の検索結果'">query</h1>
+  <a href="/book/search" class="btn btn-primary mb-3">Back to Search</a>
   <div class="row">
     <!-- Loop through each book and display its information in a card -->
-    <th:block th:each="book : ${books}">
+    <th:block th:each="book : ${data.content}">
       <div class="col-md-4">
         <div class="card mb-4">
-          <img class="card-img-top" th:src="${book.imageUrl}" alt="Book cover image">
+          <!-- <img class="card-img-top" th:src="${book.imageUrl}" alt="Book cover image"> -->
           <div class="card-body">
             <h5 class="card-title" th:text="${book.title}"></h5>
-            <h6 class="card-subtitle mb-2 text-muted" th:text="${book.authors}"></h6>
-            <p class="card-text" th:text="${book.description}"></p>
+            <p class="card-text" th:text="${book.publishedDate}"></p>
             <a href="#" class="btn btn-primary">More info</a>
           </div>
         </div>
       </div>
     </th:block>
   </div>
+
+  <div th:if="${message}" class="alert alert-info mt-4" role="alert">
+    <p th:text="${message}"></p>
+  </div>
+
+  <nav>
+    <ul class="pagination justify-content-center">
+      <li th:class="${data.first ? 'page-item disabled' : 'page-item'}">
+        <a class="page-link" th:href="@{/book/list(page=${data.number - 1})}" tabindex="-1">Previous</a>
+      </li>
+      <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:class="${i == data.number ? 'page-item active' : 'page-item'}">
+        <a class="page-link" th:href="@{/book/list(page=${i})}" th:text="${i + 1}">${i + 1}</a>
+      </li>
+      <li th:class="${data.last ? 'page-item disabled' : 'page-item'}">
+        <a class="page-link" th:href="@{/book/list(page=${data.number + 1})}">Next</a>
+      </li>
+    </ul>
+  </nav>
+
 </div>
-<!-- Add Bootstrap JavaScript -->
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
