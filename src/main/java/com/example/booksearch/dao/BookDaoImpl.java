@@ -42,17 +42,23 @@ public class BookDaoImpl implements BookDao, InitializingBean {
         List<Map<String, Object>> itemsList = (List<Map<String, Object>>) responseMap.get("items");
 
         List<Book> books = new ArrayList<>();
-        for (Map<String, Object> itemMap : itemsList) {
-            Map<String, Object> volumeInfoMap = (Map<String, Object>) itemMap.get("volumeInfo");
-            // Map<String, Object> imageLinksMap = (Map<String, Object>) itemMap.get("imageLinks");
+        if (itemsList != null) {
+            for (Map<String, Object> itemMap : itemsList) {
+                Map<String, Object> volumeInfoMap = (Map<String, Object>) itemMap.get("volumeInfo");
+                Map<String, Object> imageLinksMap = (Map<String, Object>) volumeInfoMap.get("imageLinks");
 
-            Book book = new Book();
-            book.setTitle((String) volumeInfoMap.get("title"));
-            book.setPublishedDate((String) volumeInfoMap.get("publishedDate"));
-            // book.setImageUrl((String) imageLinksMap.get("thumbnail"));
-            books.add(book);
+                Book book = new Book();
+                book.setTitle((String) volumeInfoMap.get("title"));
+                book.setLanguage((String) volumeInfoMap.get("language"));
+                book.setPublishedDate((String) volumeInfoMap.get("publishedDate"));
+                if (imageLinksMap != null) {
+                    book.setImageUrl((String) imageLinksMap.get("thumbnail"));
+                } else {
+                    book.setImageUrl("https://picsum.photos/200/300?random=0");
+                }
+                books.add(book);
+            }
         }
-
         BookList bookList = new BookList();
         bookList.setBooks(books);
         return bookList;

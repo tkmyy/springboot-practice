@@ -14,6 +14,8 @@ public class Book {
     private String description;
     private String imageUrl;
 
+    private String Language;
+
     public String getId() {
         return id;
     }
@@ -68,5 +70,12 @@ public class Book {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+    public void setLanguage(String language) {
+        Language = language;
+    }
+
+    public String getLanguage() {
+        return Language;
     }
 }

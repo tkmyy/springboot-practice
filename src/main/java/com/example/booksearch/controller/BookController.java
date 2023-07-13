@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/book")
@@ -45,25 +46,52 @@ public class BookController {
     }
 
     @GetMapping(path = "/list")
-    public String list(Model model, HttpSession session, @RequestParam(defaultValue = "0") int page, @ModelAttribute QueryForm queryForm) {
+    public String list(Model model, HttpSession session, @RequestParam(defaultValue = "0") int page, @ModelAttribute QueryForm queryForm, @RequestParam(name = "filters", required = false) List<String> filters) {
         if (model.getAttribute("queryForm") == null) {
             return "redirect:/book/search";
         }
         BookList books = (BookList) session.getAttribute("searchResult");
         queryForm = (QueryForm) session.getAttribute("queryForm");
+
+        // フィルタリング機能
+        List<Book> filteredBooks = filterBooksByLanguage(books.getBooks(), filters); // 言語でフィルタリング
+        if (filters != null && !filters.isEmpty()) {
+            filteredBooks = filteredBooks.stream()
+                    .filter(book -> filters.contains(book.getLanguage()))
+                    .collect(Collectors.toList());
+        }
+
         int pageSize = 10;
-        int totalPages = (int) Math.ceil((double) books.getBooks().size() / pageSize);
-        if (books.getBooks().isEmpty()) {
+        int totalPages = (int) Math.ceil((double) filteredBooks.size() / pageSize);
+
+        if (filteredBooks.isEmpty()) {
             model.addAttribute("message", "該当する商品はありません");
             totalPages = 1;
         }
         int start = page * pageSize;
-        int end = Math.min((page + 1) * pageSize, books.getBooks().size());
-        List<Book> pageItems = books.getBooks().subList(start, end);
+        int end = Math.min((page + 1) * pageSize, filteredBooks.size());
+        List<Book> pageItems = filteredBooks.subList(start, end);
         Page<Book> bookPage = new PageImpl<>(pageItems, PageRequest.of(page, pageSize), books.getBooks().size());
         model.addAttribute("data", bookPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("queryForm", queryForm);
+        model.addAttribute("selectedFilters", filters);
+        model.addAttribute("filterParams", getFilterParams(filters));
         return "book/list";
+    }
+
+    private List<Book> filterBooksByLanguage(List<Book> books, List<String> filters) {
+        if (filters == null || filters.isEmpty()) {
+            return books; // フィルターが指定されていない場合は全ての本を返す
+        }
+        return books.stream()
+                .filter(book -> filters.contains(book.getLanguage())) // 言語がフィルターに含まれている本のみを返す
+                .collect(Collectors.toList());
+    }
+    private String getFilterParams(List<String> filters) {
+        if (filters == null || filters.isEmpty()) {
+            return ""; // フィルターが指定されていない場合は空文字列を返す
+        }
+        return "?filters=" + String.join("&filters=", filters); // フィルタリング情報をクエリパラメータ形式に変換
     }
 }
